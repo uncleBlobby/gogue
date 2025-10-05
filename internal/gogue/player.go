@@ -117,52 +117,6 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			}
 		}
 
-		// moveDir := rl.Vector2Subtract(p.MoveTarget.Position.ToVec2(), p.Position.ToVec2())
-		// _ = rl.Vector2Normalize(moveDir)
-		// // move toward target
-
-		// rl.DrawText(fmt.Sprintf("MOVE DIR: %f, %f", moveDir.X, moveDir.Y), 200, 200, 18, rl.Black)
-
-		// // p.Position.X += int(math.Ceil(float64(moveDirNorm.X * p.Speed * dt)))
-		// // p.Position.Y += int(math.Ceil(float64(moveDirNorm.Y * p.Speed * dt)))
-
-		// // find path
-
-		// //pathToTarget := BreadthFirstSearch(l, p.Position, p.MoveTarget.Position)
-
-		// // rl.DrawText(fmt.Sprintf("PATH: %v", pathToTarget), 5, 200, 16, rl.DarkGray)
-
-		// fmt.Println(pathToTarget)
-
-		// for _, pStep := range pathToTarget {
-		// 	//rl.DrawRectangle(500, 500, 16, 16, rl.Brown)
-		// 	rl.DrawRectangle(int32(pStep.X)*16, int32(pStep.Y)*16, 16, 16, rl.Brown)
-		// }
-
-		// //pathToTarget = pathToTarget[1:]
-
-		// // p.MoveTarget.Position.X = pathToTarget[1].X
-		// // p.MoveTarget.Position.Y = pathToTarget[1].Y
-		// //targetFloatV := rl.Vector2{float32(pathToTarget[1].X), float32(pathToTarget[1].Y)}
-
-		// const epsilon = 0.1
-
-		// moveDir = rl.Vector2Subtract(pathToTarget[1].ToVec2(), p.Position.ToVec2())
-		// moveDirNorm := rl.Vector2Normalize(moveDir)
-		// dist := rl.Vector2Length(moveDir)
-
-		// if dist < epsilon {
-		// 	p.Position = pathToTarget[1]
-		// } else {
-		// 	dir := moveDirNorm
-		// 	// p.Position = rl.Vector2Add(rl.Vector2Multiply())
-		// 	p.Position.X += int(dir.X * p.Speed)
-		// 	p.Position.Y += int(dir.Y * p.Speed)
-		// }
-
-		// // move to target
-		// // p.Position.X += int(moveDirNorm.X * p.Speed)
-		// // p.Position.Y += int(moveDirNorm.Y * p.Speed)
 	}
 }
 
@@ -178,34 +132,27 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 	fmt.Println("Start: ", start, "End: ", end)
 
 	var directions = []MapPosition{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
+		{0, 1}, // down
+
+		{1, 1}, // down right
+
+		{1, 0}, // right
+
+		{1, -1}, // up right
+
+		{0, -1}, // up
+
+		{-1, -1}, // up left
+
+		{-1, 0}, // left
+
+		{-1, 1}, // down left
 	}
 
-	// // level width
-	// rows := 10000
-
-	// // level height
-	// cols := 10000
-
-	// if !start.IsInBounds(cols, rows) || !end.IsInBounds(cols, rows) {
-	// 	fmt.Println("Start or end is out of bounds!")
-	// 	return nil
-	// }
-
-	// visited := make([][]bool, rows)
 	visited := make(map[MapPosition]bool)
 	prev := make(map[MapPosition]MapPosition)
-	// for i := range visited {
-	// 	visited[i] = make([]bool, cols)
-	// }
-
-	// prev := make(map[MapPosition]MapPosition)
 
 	queue := []MapPosition{start}
-	// visited[start.Y][start.X] = true
 	visited[start] = true
 
 	for len(queue) > 0 {
@@ -219,8 +166,6 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 		for _, d := range directions {
 			neighbour := MapPosition{current.X + d.X, current.Y + d.Y}
 
-			//fmt.Printf("Visiting: %v -> %v\n", current, neighbour)
-
 			if visited[neighbour] {
 				continue
 			}
@@ -228,40 +173,10 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 			visited[neighbour] = true
 			prev[neighbour] = current
 
-			// nTile := GetLevelTileFromMapPosition(l, neighbour)
-
-			// if !nTile.IsPassable {
-			// 	continue
-			// }
-
 			queue = append(queue, neighbour)
 
-			// if neighbour.X >= 0 && neighbour.X < cols && neighbour.Y >= 0 && neighbour.Y < rows && !visited[neighbour.Y][neighbour.X] {
-			// 	// if neighbour is out of bounds, pass
-			// 	// if !neighbour.IsInBounds(b) { continue }
-			// 	queue = append(queue, neighbour)
-			// 	visited[neighbour.Y][neighbour.X] = true
-			// 	prev[neighbour] = current
-			// }
 		}
 	}
-
-	// path := []MapPosition{}
-
-	// for at := end; at != nil; at = prev[at] {
-	// 	path = append([]MapPosition{at}, path...)
-	// 	if *at == start {
-	// 		break
-	// 	}
-	// }
-
-	// if len(path) == 0 || path[0] != start {
-	// 	fmt.Println("PATHING IS FUCKED")
-	// 	return nil
-	// }
-
-	// fmt.Println("RETURNING PATH")
-	// return path
 
 	path := []MapPosition{}
 	current := end
@@ -272,15 +187,12 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 		}
 		p, ok := prev[current]
 		if !ok {
-			//no path found
-			// fmt.Println("Visited tiles: ", countVisited(visited))
 			// fmt.Println("NO PATH FOUND")
 			return nil
 		}
 		current = p
 	}
 
-	fmt.Println("RETURNING PATH")
 	return path
 }
 
