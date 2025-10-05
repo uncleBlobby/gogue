@@ -8,6 +8,7 @@ import (
 
 const SCREEN_WIDTH = 800
 const SCREEN_HEIGHT = 600
+const TILE_SIZE = 16
 
 type Level struct {
 	Tiles []Tile
@@ -39,8 +40,8 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			if rl.CheckCollisionPointRec(mwp, rl.Rectangle{
 				X:      t.Position.X,
 				Y:      t.Position.Y,
-				Width:  16,
-				Height: 16,
+				Width:  TILE_SIZE,
+				Height: TILE_SIZE,
 			}) {
 				p.MoveTarget = t
 			}
@@ -59,7 +60,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 }
 
 func (p *Player) Draw() {
-	rl.DrawRectangle(int32(p.Position.X), int32(p.Position.Y), 16, 16, rl.Blue)
+	rl.DrawRectangle(int32(p.Position.X), int32(p.Position.Y), TILE_SIZE, TILE_SIZE, rl.Blue)
 }
 
 func (l *Level) Draw(mwp rl.Vector2) {
@@ -69,15 +70,15 @@ func (l *Level) Draw(mwp rl.Vector2) {
 }
 
 func (t *Tile) Draw(mwp rl.Vector2) {
-	rl.DrawRectangle(int32(t.Position.X), int32(t.Position.Y), 16, 16, t.Color)
+	rl.DrawRectangle(int32(t.Position.X), int32(t.Position.Y), TILE_SIZE, TILE_SIZE, t.Color)
 
 	if rl.CheckCollisionPointRec(mwp, rl.Rectangle{
 		X:      t.Position.X,
 		Y:      t.Position.Y,
-		Width:  16,
-		Height: 16,
+		Width:  TILE_SIZE,
+		Height: TILE_SIZE,
 	}) {
-		rl.DrawRectangle(int32(t.Position.X), int32(t.Position.Y), 16, 16, rl.Yellow)
+		rl.DrawRectangle(int32(t.Position.X), int32(t.Position.Y), TILE_SIZE, TILE_SIZE, rl.Yellow)
 	}
 }
 
@@ -94,7 +95,7 @@ func main() {
 	for i := -100; i < 100; i++ {
 		for j := -100; j < 100; j++ {
 			l.Tiles = append(l.Tiles, Tile{
-				Position: rl.Vector2{X: float32(i) * 16, Y: float32(j) * 16},
+				Position: rl.Vector2{X: float32(i) * TILE_SIZE, Y: float32(j) * 16},
 				Color:    rl.Green,
 			})
 		}

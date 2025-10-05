@@ -20,3 +20,5 @@
 -[] think about world entities
     -[] tile variety
     -[] art style? ascii vs tilemap? both?
+        - [] tile size? 16 x 16 vs 32 x 32?
+            - 16 x 16 seems like it might be sufficient... less demanding to create art, less pixels
