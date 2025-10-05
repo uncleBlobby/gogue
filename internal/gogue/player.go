@@ -228,6 +228,12 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 			visited[neighbour] = true
 			prev[neighbour] = current
 
+			// nTile := GetLevelTileFromMapPosition(l, neighbour)
+
+			// if !nTile.IsPassable {
+			// 	continue
+			// }
+
 			queue = append(queue, neighbour)
 
 			// if neighbour.X >= 0 && neighbour.X < cols && neighbour.Y >= 0 && neighbour.Y < rows && !visited[neighbour.Y][neighbour.X] {
@@ -284,6 +290,16 @@ func (m *MapPosition) IsInBounds(boundW int, boundH int) bool {
 	}
 
 	return true
+}
+
+func GetLevelTileFromMapPosition(l Level, target MapPosition) Tile {
+	for _, lTile := range l.Tiles {
+		if lTile.Position.X == target.X && lTile.Position.Y == target.Y {
+			return lTile
+		}
+	}
+
+	return Tile{}
 }
 
 func countVisited(v [][]bool) int {

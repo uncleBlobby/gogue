@@ -23,10 +23,19 @@ func main() {
 	for i := 0; i < 100; i++ {
 		for j := 0; j < 100; j++ {
 			l.Tiles = append(l.Tiles, gogue.Tile{
-				Position: gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-				Color:    rl.Green,
+				Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+				Color:      rl.Green,
+				IsPassable: true,
 			})
 		}
+	}
+
+	for i := 25; i < 50; i++ {
+		l.Tiles = append(l.Tiles, gogue.Tile{
+			Position:   gogue.MapPosition{X: i*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: 30*gogue.TILE_SIZE + gogue.TILE_SIZE/2},
+			IsPassable: false,
+			Color:      rl.Gray,
+		})
 	}
 
 	player := gogue.Player{
@@ -50,6 +59,8 @@ func main() {
 		mousePos := rl.GetMousePosition()
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
 
+		mouseTilePosition := gogue.GetMapPositionFromVec(mwp)
+
 		// player.Update(dt, l, mwp)
 
 		rl.BeginDrawing()
@@ -66,6 +77,7 @@ func main() {
 		rl.EndMode2D()
 
 		DrawDebugText(player)
+		rl.DrawText(fmt.Sprintf("MouseTILE: %d, %d", mouseTilePosition.X, mouseTilePosition.Y), 25, 25, 36, rl.Black)
 
 		rl.EndDrawing()
 	}
