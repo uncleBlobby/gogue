@@ -23,15 +23,17 @@ func main() {
 	for i := -100; i < 100; i++ {
 		for j := -100; j < 100; j++ {
 			l.Tiles = append(l.Tiles, gogue.Tile{
-				Position: rl.Vector2{X: float32(i) * gogue.TILE_SIZE, Y: float32(j) * 16},
+				Position: gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 				Color:    rl.Green,
 			})
 		}
 	}
 
 	player := gogue.Player{
-		Position: rl.Vector2{X: 0, Y: 0},
-		Speed:    1,
+		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
+		Position:    gogue.MapPosition{X: 0, Y: 0}.ToVec2(),
+		MapPosition: gogue.MapPosition{X: 0, Y: 0},
+		Speed:       100,
 	}
 
 	camera := rl.Camera2D{
@@ -45,7 +47,7 @@ func main() {
 		mousePos := rl.GetMousePosition()
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
 
-		player.Update(dt, l, mwp)
+		// player.Update(dt, l, mwp)
 
 		rl.BeginDrawing()
 
@@ -55,6 +57,8 @@ func main() {
 
 		l.Draw(mwp)
 		player.Draw()
+
+		player.Update(dt, l, mwp)
 
 		rl.EndMode2D()
 
@@ -66,6 +70,7 @@ func main() {
 }
 
 func DrawDebugText(p gogue.Player) {
-	rl.DrawText(fmt.Sprintf("PLAYER POS: %.2f, %.2f", p.Position.X, p.Position.Y), 5, 5, 16, rl.DarkGray)
-	rl.DrawText(fmt.Sprintf("PLAYER MOVE TARGET: %.2f, %.2f", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 5, 22, 16, rl.DarkGray)
+	rl.DrawText(fmt.Sprintf("PLAYER POS: %d, %d", p.Position.X, p.Position.Y), 5, 5, 16, rl.DarkGray)
+	rl.DrawText(fmt.Sprintf("PLAYER MOVE TARGET: %d, %d", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 5, 22, 16, rl.DarkGray)
+	rl.DrawText(fmt.Sprintf("AT MOVE TARGET: %t", p.IsAtMoveTarget()), 5, 40, 16, rl.DarkGray)
 }

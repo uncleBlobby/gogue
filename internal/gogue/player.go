@@ -1,15 +1,41 @@
 package gogue
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
+	"fmt"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
 
 type Player struct {
-	Position   rl.Vector2
-	Speed      float32
-	MoveTarget Tile
+	MapPosition MapPosition
+	Position    rl.Vector2
+	Speed       float32
+	MoveTarget  Tile
+	CurrentPath []MapPosition
+	PathIndex   int
+}
+
+type MapPosition struct {
+	X int
+	Y int
+}
+
+func (m MapPosition) ToVec2() rl.Vector2 {
+	return rl.Vector2{
+		X: (float32(m.X) * TILE_SIZE) + TILE_SIZE/2,
+		Y: (float32(m.Y) * TILE_SIZE) + TILE_SIZE/2,
+	}
+}
+
+func GetMapPositionFromVec(v rl.Vector2) MapPosition {
+	return MapPosition{
+		X: int(v.X / TILE_SIZE),
+		Y: int(v.Y / TILE_SIZE),
+	}
 }
 
 func (p *Player) IsAtMoveTarget() bool {
-	if p.Position.X != p.MoveTarget.Position.X || p.Position.Y != p.MoveTarget.Position.Y {
+	if int(p.Position.X) != p.MoveTarget.Position.X || int(p.Position.Y) != p.MoveTarget.Position.Y {
 		return false
 	}
 
@@ -18,30 +44,254 @@ func (p *Player) IsAtMoveTarget() bool {
 
 func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 
+	p.MapPosition = GetMapPositionFromVec(p.Position)
+
 	if rl.IsMouseButtonReleased(rl.MouseButtonLeft) {
 		for _, t := range l.Tiles {
 			if rl.CheckCollisionPointRec(mwp, rl.Rectangle{
-				X:      t.Position.X,
-				Y:      t.Position.Y,
+				X:      float32(t.Position.X),
+				Y:      float32(t.Position.Y),
 				Width:  TILE_SIZE,
 				Height: TILE_SIZE,
 			}) {
 				p.MoveTarget = t
+
+				pathToTarget := BreadthFirstSearch(l, p.MapPosition, p.MoveTarget.Position)
+				p.CurrentPath = pathToTarget
+				p.PathIndex = 1
 			}
 		}
 	}
 
 	if !p.IsAtMoveTarget() {
 
-		moveDir := rl.Vector2Subtract(p.MoveTarget.Position, p.Position)
-		// move toward target
+		fmt.Println(p.CurrentPath)
+		if p.CurrentPath != nil && p.PathIndex < len(p.CurrentPath) {
 
-		p.Position.X += moveDir.X * p.Speed * dt
-		p.Position.Y += moveDir.Y * p.Speed * dt
-		// find path
+			rl.DrawCircleV(p.Position, 4, rl.Red)
+
+			for _, step := range p.CurrentPath {
+				pos := step.ToVec2()
+				rl.DrawRectangle(int32(pos.X)-4, int32(pos.Y)-4, 8, 8, rl.Brown)
+			}
+
+			tileTarget := p.CurrentPath[p.PathIndex]
+
+			worldTarget := tileTarget.ToVec2()
+
+			//target := p.CurrentPath[p.PathIndex].ToVec2()
+
+			//target = rl.Vector2{target.X * TILE_SIZE, target.Y * TILE_SIZE}
+			// rl.DrawText(fmt.Sprintf("TARGET: %v", target), 50, 200, 16, rl.DarkGray)
+			toTarget := rl.Vector2Subtract(worldTarget, p.Position)
+			// rl.DrawText(fmt.Sprintf("P POSITION: %v", target), 50, 225, 16, rl.DarkGray)
+			dist := rl.Vector2Length(toTarget)
+			fmt.Println("DISTANCE: ", dist)
+
+			// epsilon := 4.0
+
+			// snapX := math.Abs(float64(toTarget.X)) < epsilon
+			// snapY := math.Abs(float64(toTarget.Y)) < epsilon
+
+			step := p.Speed * dt
+
+			// if dist < float32(epsilon) || dist < p.Speed*dt {
+			if dist <= step {
+				p.Position = worldTarget
+				p.MapPosition = p.CurrentPath[p.PathIndex]
+				p.PathIndex++
+				if p.PathIndex >= len(p.CurrentPath) {
+					p.CurrentPath = nil
+				}
+			} else {
+				dir := rl.Vector2Normalize(toTarget)
+				fmt.Println("DIR: ", dir)
+				// p.Position.X = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).X)
+				// p.Position.Y = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).Y)
+				p.Position = rl.Vector2Add(p.Position, rl.Vector2Scale(dir, p.Speed*dt))
+				// p.Position.X += dir.X * p.Speed * dt
+				// p.Position.Y += dir.Y * p.Speed * dt
+			}
+		}
+
+		// moveDir := rl.Vector2Subtract(p.MoveTarget.Position.ToVec2(), p.Position.ToVec2())
+		// _ = rl.Vector2Normalize(moveDir)
+		// // move toward target
+
+		// rl.DrawText(fmt.Sprintf("MOVE DIR: %f, %f", moveDir.X, moveDir.Y), 200, 200, 18, rl.Black)
+
+		// // p.Position.X += int(math.Ceil(float64(moveDirNorm.X * p.Speed * dt)))
+		// // p.Position.Y += int(math.Ceil(float64(moveDirNorm.Y * p.Speed * dt)))
+
+		// // find path
+
+		// //pathToTarget := BreadthFirstSearch(l, p.Position, p.MoveTarget.Position)
+
+		// // rl.DrawText(fmt.Sprintf("PATH: %v", pathToTarget), 5, 200, 16, rl.DarkGray)
+
+		// fmt.Println(pathToTarget)
+
+		// for _, pStep := range pathToTarget {
+		// 	//rl.DrawRectangle(500, 500, 16, 16, rl.Brown)
+		// 	rl.DrawRectangle(int32(pStep.X)*16, int32(pStep.Y)*16, 16, 16, rl.Brown)
+		// }
+
+		// //pathToTarget = pathToTarget[1:]
+
+		// // p.MoveTarget.Position.X = pathToTarget[1].X
+		// // p.MoveTarget.Position.Y = pathToTarget[1].Y
+		// //targetFloatV := rl.Vector2{float32(pathToTarget[1].X), float32(pathToTarget[1].Y)}
+
+		// const epsilon = 0.1
+
+		// moveDir = rl.Vector2Subtract(pathToTarget[1].ToVec2(), p.Position.ToVec2())
+		// moveDirNorm := rl.Vector2Normalize(moveDir)
+		// dist := rl.Vector2Length(moveDir)
+
+		// if dist < epsilon {
+		// 	p.Position = pathToTarget[1]
+		// } else {
+		// 	dir := moveDirNorm
+		// 	// p.Position = rl.Vector2Add(rl.Vector2Multiply())
+		// 	p.Position.X += int(dir.X * p.Speed)
+		// 	p.Position.Y += int(dir.Y * p.Speed)
+		// }
+
+		// // move to target
+		// // p.Position.X += int(moveDirNorm.X * p.Speed)
+		// // p.Position.Y += int(moveDirNorm.Y * p.Speed)
 	}
 }
 
 func (p *Player) Draw() {
-	rl.DrawRectangle(int32(p.Position.X), int32(p.Position.Y), TILE_SIZE, TILE_SIZE, rl.Blue)
+	rl.DrawRectangle(int32(p.Position.X-TILE_SIZE/2), int32(p.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, rl.Blue)
+	rl.DrawCircleV(p.Position, 4, rl.Red)
+}
+
+func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPosition {
+
+	end = MapPosition{end.X / 16, end.Y / 16}
+
+	fmt.Println("Start: ", start, "End: ", end)
+
+	var directions = []MapPosition{
+		{0, 1},
+		{1, 0},
+		{0, -1},
+		{-1, 0},
+	}
+
+	// // level width
+	// rows := 10000
+
+	// // level height
+	// cols := 10000
+
+	// if !start.IsInBounds(cols, rows) || !end.IsInBounds(cols, rows) {
+	// 	fmt.Println("Start or end is out of bounds!")
+	// 	return nil
+	// }
+
+	// visited := make([][]bool, rows)
+	visited := make(map[MapPosition]bool)
+	prev := make(map[MapPosition]MapPosition)
+	// for i := range visited {
+	// 	visited[i] = make([]bool, cols)
+	// }
+
+	// prev := make(map[MapPosition]MapPosition)
+
+	queue := []MapPosition{start}
+	// visited[start.Y][start.X] = true
+	visited[start] = true
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+
+		if current == end {
+			break
+		}
+
+		for _, d := range directions {
+			neighbour := MapPosition{current.X + d.X, current.Y + d.Y}
+
+			//fmt.Printf("Visiting: %v -> %v\n", current, neighbour)
+
+			if visited[neighbour] {
+				continue
+			}
+
+			visited[neighbour] = true
+			prev[neighbour] = current
+
+			queue = append(queue, neighbour)
+
+			// if neighbour.X >= 0 && neighbour.X < cols && neighbour.Y >= 0 && neighbour.Y < rows && !visited[neighbour.Y][neighbour.X] {
+			// 	// if neighbour is out of bounds, pass
+			// 	// if !neighbour.IsInBounds(b) { continue }
+			// 	queue = append(queue, neighbour)
+			// 	visited[neighbour.Y][neighbour.X] = true
+			// 	prev[neighbour] = current
+			// }
+		}
+	}
+
+	// path := []MapPosition{}
+
+	// for at := end; at != nil; at = prev[at] {
+	// 	path = append([]MapPosition{at}, path...)
+	// 	if *at == start {
+	// 		break
+	// 	}
+	// }
+
+	// if len(path) == 0 || path[0] != start {
+	// 	fmt.Println("PATHING IS FUCKED")
+	// 	return nil
+	// }
+
+	// fmt.Println("RETURNING PATH")
+	// return path
+
+	path := []MapPosition{}
+	current := end
+	for {
+		path = append([]MapPosition{current}, path...)
+		if current == start {
+			break
+		}
+		p, ok := prev[current]
+		if !ok {
+			//no path found
+			// fmt.Println("Visited tiles: ", countVisited(visited))
+			// fmt.Println("NO PATH FOUND")
+			return nil
+		}
+		current = p
+	}
+
+	fmt.Println("RETURNING PATH")
+	return path
+}
+
+func (m *MapPosition) IsInBounds(boundW int, boundH int) bool {
+	if m.X >= boundW || m.X < 0 || m.Y >= boundH || m.Y < 0 {
+		return false
+	}
+
+	return true
+}
+
+func countVisited(v [][]bool) int {
+	count := 0
+	for _, row := range v {
+		for _, b := range row {
+			if b {
+				count++
+			}
+		}
+	}
+
+	return count
 }
