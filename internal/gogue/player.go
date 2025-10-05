@@ -46,6 +46,9 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 
 	p.MapPosition = GetMapPositionFromVec(p.Position)
 
+	pMapPosWorld := p.MapPosition.ToVec2()
+	rl.DrawRectangle(int32(pMapPosWorld.X)-TILE_SIZE/2, int32(pMapPosWorld.Y)-TILE_SIZE/2, 16, 16, rl.Orange)
+
 	if rl.IsMouseButtonReleased(rl.MouseButtonLeft) {
 		for _, t := range l.Tiles {
 			if rl.CheckCollisionPointRec(mwp, rl.Rectangle{

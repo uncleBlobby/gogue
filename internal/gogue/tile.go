@@ -10,7 +10,7 @@ type Tile struct {
 }
 
 func (t *Tile) Draw(mwp rl.Vector2) {
-	rl.DrawRectangle(int32(t.Position.X+TILE_SIZE/2), int32(t.Position.Y+TILE_SIZE/2), TILE_SIZE, TILE_SIZE, t.Color)
+	rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, t.Color)
 
 	if rl.CheckCollisionPointRec(mwp, rl.Rectangle{
 		X:      float32(t.Position.X),
@@ -18,6 +18,6 @@ func (t *Tile) Draw(mwp rl.Vector2) {
 		Width:  TILE_SIZE,
 		Height: TILE_SIZE,
 	}) {
-		rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y+TILE_SIZE/2), TILE_SIZE, TILE_SIZE, rl.Yellow)
+		rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, rl.Yellow)
 	}
 }
