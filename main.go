@@ -34,7 +34,7 @@ func main() {
 		for i := 0; i < l.Width; i++ {
 
 			// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
-			val := 0.6*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.4*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
+			val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
 
 			val = (val + 1) / 2
 
