@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/aquilax/go-perlin"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/uncleBlobby/gogue/internal/gogue"
 )
@@ -20,8 +21,22 @@ func main() {
 		Height: 512,
 	}
 
+	alpha := 2.0
+	beta := 2.0
+	n := int32(3)
+	seed := rand.Int63()
+
+	p := perlin.NewPerlin(alpha, beta, n, seed)
+
+	// scale := 0.1
+
 	for j := 0; j < l.Height; j++ {
 		for i := 0; i < l.Width; i++ {
+
+			// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
+			val := 0.6*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.4*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
+
+			val = (val + 1) / 2
 
 			if j == 10 {
 				l.Tiles = append(l.Tiles, gogue.Tile{
@@ -29,7 +44,7 @@ func main() {
 					Color:      rl.Gray,
 					IsPassable: false,
 				})
-			} else if rand.Float32() < 0.9 {
+			} else if val > 0.4 {
 				l.Tiles = append(l.Tiles, gogue.Tile{
 					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 					Color:      rl.Green,
