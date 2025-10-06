@@ -8,8 +8,8 @@ import (
 	"github.com/uncleBlobby/gogue/internal/gogue"
 )
 
-const SCREEN_WIDTH = 800
-const SCREEN_HEIGHT = 600
+const SCREEN_WIDTH = 1920
+const SCREEN_HEIGHT = 1080
 
 func main() {
 	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "gogue 0.01a")
@@ -52,11 +52,11 @@ func main() {
 
 	player := gogue.Player{
 		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
-		Position:    gogue.MapPosition{X: 25, Y: 25}.ToVec2(),
-		MapPosition: gogue.MapPosition{X: 25, Y: 25},
+		Position:    gogue.MapPosition{X: 50, Y: 50}.ToVec2(),
+		MapPosition: gogue.MapPosition{X: 50, Y: 50},
 		Speed:       100,
 		MoveTarget: gogue.Tile{
-			Position: gogue.MapPosition{X: 25, Y: 25},
+			Position: gogue.MapPosition{X: 50, Y: 50},
 		},
 	}
 
