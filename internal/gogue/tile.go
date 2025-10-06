@@ -23,8 +23,6 @@ func (t *Tile) Draw(mwp rl.Vector2) {
 		Height: TILE_SIZE,
 	}) {
 
-		// targetX := math.Ceil(float64(t.Position.X))
-		// targetY := math.Ceil(float64(t.Position.Y))
 		rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, rl.Yellow)
 	}
 }

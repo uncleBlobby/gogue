@@ -10,10 +10,27 @@ type Level struct {
 	Height int
 }
 
-func (l *Level) Draw(mwp rl.Vector2) {
-	for i := 0; i < len(l.Tiles); i++ {
-		l.Tiles[i].Draw(mwp)
+func (l *Level) Draw(mwp rl.Vector2, camera rl.Camera2D) {
+
+	visibleCols := SCREEN_WIDTH / TILE_SIZE
+	visibleRows := SCREEN_HEIGHT / TILE_SIZE
+
+	startX := int(camera.Target.X/TILE_SIZE) - visibleCols/2 - 1
+	startY := int(camera.Target.Y/TILE_SIZE) - visibleRows/2 - 1
+	endX := startX + visibleCols + 2
+	endY := startY + visibleCols + 2
+
+	for y := startY; y < endY; y++ {
+		for x := startX; x < endX; x++ {
+			if tile := l.Get(x, y); tile != nil {
+				tile.Draw(mwp)
+			}
+		}
 	}
+
+	// for i := 0; i < len(l.Tiles); i++ {
+	// 	l.Tiles[i].Draw(mwp)
+	// }
 }
 
 func (l *Level) Index(x, y int) int {

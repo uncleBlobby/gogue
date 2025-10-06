@@ -8,19 +8,16 @@ import (
 	"github.com/uncleBlobby/gogue/internal/gogue"
 )
 
-const SCREEN_WIDTH = 1920
-const SCREEN_HEIGHT = 1080
-
 func main() {
-	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "gogue 0.01a")
+	rl.InitWindow(gogue.SCREEN_WIDTH, gogue.SCREEN_HEIGHT, "gogue 0.01a")
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(60)
 
 	l := gogue.Level{
 		Tiles:  []gogue.Tile{},
-		Width:  100,
-		Height: 100,
+		Width:  512,
+		Height: 512,
 	}
 
 	for j := 0; j < l.Height; j++ {
@@ -52,23 +49,27 @@ func main() {
 
 	player := gogue.Player{
 		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
-		Position:    gogue.MapPosition{X: 50, Y: 50}.ToVec2(),
-		MapPosition: gogue.MapPosition{X: 50, Y: 50},
+		Position:    gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2}.ToVec2(),
+		MapPosition: gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2},
 		Speed:       100,
 		MoveTarget: gogue.Tile{
-			Position: gogue.MapPosition{X: 50, Y: 50},
+			Position: gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2},
 		},
 	}
 
 	camera := rl.Camera2D{
 		Target: player.Position,
-		Offset: rl.Vector2{X: SCREEN_WIDTH / 2, Y: SCREEN_HEIGHT / 2},
+		Offset: rl.Vector2{X: gogue.SCREEN_WIDTH / 2, Y: gogue.SCREEN_HEIGHT / 2},
 		Zoom:   1.0,
 	}
 
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
+
+		camera.Target = player.Position
+
 		mousePos := rl.GetMousePosition()
+
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
 
 		// mouseTilePosition := gogue.GetMapPositionFromVec(mwp)
@@ -81,12 +82,14 @@ func main() {
 
 		rl.ClearBackground(rl.RayWhite)
 
-		l.Draw(mwp)
-		player.Draw()
+		l.Draw(mwp, camera)
 
 		player.Update(dt, l, mwp)
 
+		player.Draw()
+
 		rl.EndMode2D()
+		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 0, 0, 24, rl.DarkGray)
 
 		// DrawDebugText(player)
 

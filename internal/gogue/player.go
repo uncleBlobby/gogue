@@ -67,6 +67,10 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 
 	if !p.IsAtMoveTarget() {
 
+		if len(p.CurrentPath) == 0 {
+			return
+		}
+
 		//fmt.Println(p.CurrentPath)
 		if p.CurrentPath != nil && p.PathIndex < len(p.CurrentPath) {
 
