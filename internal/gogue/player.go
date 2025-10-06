@@ -59,7 +59,8 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			}) {
 				p.MoveTarget = t
 
-				pathToTarget := BreadthFirstSearch(l, p.MapPosition, p.MoveTarget.Position)
+				//pathToTarget := BreadthFirstSearch(l, p.MapPosition, p.MoveTarget.Position)
+				pathToTarget := AStar(l, p.MapPosition, p.MoveTarget.Position)
 				p.CurrentPath = pathToTarget
 				p.PathIndex = 1
 			}
@@ -68,7 +69,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 
 	if !p.IsAtMoveTarget() {
 
-		fmt.Println(p.CurrentPath)
+		//fmt.Println(p.CurrentPath)
 		if p.CurrentPath != nil && p.PathIndex < len(p.CurrentPath) {
 
 			rl.DrawCircleV(p.Position, 4, rl.Red)
@@ -134,17 +135,17 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 	var directions = []MapPosition{
 		{0, 1}, // down
 
-		{1, 1}, // down right
-
 		{1, 0}, // right
-
-		{1, -1}, // up right
 
 		{0, -1}, // up
 
-		{-1, -1}, // up left
-
 		{-1, 0}, // left
+
+		{1, 1}, // down right
+
+		{1, -1}, // up right
+
+		{-1, -1}, // up left
 
 		{-1, 1}, // down left
 	}
