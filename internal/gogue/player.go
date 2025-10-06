@@ -1,8 +1,6 @@
 package gogue
 
 import (
-	"fmt"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -90,7 +88,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			toTarget := rl.Vector2Subtract(worldTarget, p.Position)
 			// rl.DrawText(fmt.Sprintf("P POSITION: %v", target), 50, 225, 16, rl.DarkGray)
 			dist := rl.Vector2Length(toTarget)
-			fmt.Println("DISTANCE: ", dist)
+			// fmt.Println("DISTANCE: ", dist)
 
 			// epsilon := 4.0
 
@@ -109,7 +107,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 				}
 			} else {
 				dir := rl.Vector2Normalize(toTarget)
-				fmt.Println("DIR: ", dir)
+				// fmt.Println("DIR: ", dir)
 				// p.Position.X = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).X)
 				// p.Position.Y = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).Y)
 				p.Position = rl.Vector2Add(p.Position, rl.Vector2Scale(dir, p.Speed*dt))
@@ -130,7 +128,7 @@ func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPositi
 
 	end = MapPosition{end.X / 16, end.Y / 16}
 
-	fmt.Println("Start: ", start, "End: ", end)
+	// fmt.Println("Start: ", start, "End: ", end)
 
 	var directions = []MapPosition{
 		{0, 1}, // down

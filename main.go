@@ -32,7 +32,7 @@ func main() {
 					Color:      rl.Gray,
 					IsPassable: false,
 				})
-			} else if rand.Float32() < 0.95 {
+			} else if rand.Float32() < 0.9 {
 				l.Tiles = append(l.Tiles, gogue.Tile{
 					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 					Color:      rl.Green,
@@ -48,7 +48,7 @@ func main() {
 		}
 	}
 
-	fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
+	// fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
 
 	player := gogue.Player{
 		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
@@ -88,25 +88,7 @@ func main() {
 
 		rl.EndMode2D()
 
-		DrawDebugText(player)
-		//rl.DrawText(fmt.Sprintf("MouseTILE: %d, %d", mouseTilePosition.X, mouseTilePosition.Y), 25, 25, 36, rl.Black)
-
-		//tileUnderMouse := l.Get(mouseTilePosition.X, mouseTilePosition.Y)
-
-		//rl.DrawText(fmt.Sprintf("isWalkable: %t", tileUnderMouse.IsPassable), 50, 300, 32, rl.Black)
-
-		// for _, t := range l.Tiles {
-		// 	if !t.IsPassable {
-
-		// 		tWorldPos := t.Position
-		// 		// fmt.Println("NON WALKABLE: ", tWorldPos)
-
-		// 		screenY := tWorldPos.Y - (7 * gogue.TILE_SIZE)
-		// 		screenX := tWorldPos.X - (1 * gogue.TILE_SIZE)
-
-		// 		rl.DrawCircle(int32(screenX+gogue.TILE_SIZE/2), int32(screenY+gogue.TILE_SIZE/2), 3, rl.Red)
-		// 	}
-		// }
+		// DrawDebugText(player)
 
 		rl.EndDrawing()
 	}

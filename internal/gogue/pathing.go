@@ -65,7 +65,7 @@ func AStar(level Level, start, goal MapPosition) []MapPosition {
 			for n := current; n != nil; n = n.Parent {
 				path = append([]MapPosition{n.Pos}, path...)
 			}
-			fmt.Println("RETURNING PATH")
+			// fmt.Println("RETURNING PATH")
 			return path
 		}
 
@@ -116,6 +116,6 @@ func AStar(level Level, start, goal MapPosition) []MapPosition {
 		}
 	}
 
-	fmt.Println("NO PATH FOUND")
+	// fmt.Println("NO PATH FOUND")
 	return nil
 }
