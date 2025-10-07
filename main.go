@@ -79,7 +79,7 @@ func main() {
 		Zoom:   1.0,
 	}
 
-	l.InitRenderTexture()
+	// l.InitRenderTexture()
 
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
@@ -90,7 +90,7 @@ func main() {
 
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
 
-		l.RedrawStaticLayer(mwp)
+		// l.RedrawStaticLayer(mwp)
 
 		// mouseTilePosition := gogue.GetMapPositionFromVec(mwp)
 
@@ -102,8 +102,8 @@ func main() {
 
 		rl.ClearBackground(rl.RayWhite)
 
-		//l.Draw(mwp, camera)
-		l.DrawRenderTexture(mwp, camera)
+		l.PlainDraw(mwp, camera)
+		//l.DrawRenderTexture(mwp, camera)
 
 		player.Update(dt, l, mwp)
 
