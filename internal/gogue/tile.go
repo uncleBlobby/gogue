@@ -6,14 +6,31 @@ import (
 
 const TILE_SIZE = 16
 
+type TileKind int
+
+const (
+	GRASS TileKind = iota
+	WALL
+	DOOR
+)
+
 type Tile struct {
 	Position   MapPosition
 	Color      rl.Color
 	IsPassable bool
+	Kind       TileKind
 }
 
 func (t *Tile) Draw(mwp rl.Vector2) {
-	rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, t.Color)
+
+	if t.Kind == TileKind(DOOR) {
+		//fmt.Println("DRAWING DOOR")
+		rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE*4, TILE_SIZE*4, rl.Red)
+	} else {
+		// fmt.Println("DRAWING NON-DOOR")
+		rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, t.Color)
+	}
+
 	// rl.DrawRectangle(int32(t.Position.X), int32(t.Position.Y), TILE_SIZE, TILE_SIZE, t.Color)
 
 	if rl.CheckCollisionPointRec(mwp, rl.Rectangle{

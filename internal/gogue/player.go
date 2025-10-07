@@ -55,7 +55,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 				Width:  TILE_SIZE,
 				Height: TILE_SIZE,
 			}) {
-				p.MoveTarget = t
+				p.MoveTarget = *t
 
 				//pathToTarget := BreadthFirstSearch(l, p.MapPosition, p.MoveTarget.Position)
 				pathToTarget := AStar(l, p.MapPosition, p.MoveTarget.Position)
@@ -210,7 +210,7 @@ func (m *MapPosition) IsInBounds(boundW int, boundH int) bool {
 func GetLevelTileFromMapPosition(l Level, target MapPosition) Tile {
 	for _, lTile := range l.Tiles {
 		if lTile.Position.X == target.X && lTile.Position.Y == target.Y {
-			return lTile
+			return *lTile
 		}
 	}
 

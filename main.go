@@ -16,9 +16,9 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	l := gogue.Level{
-		Tiles:  []gogue.Tile{},
-		Width:  512,
-		Height: 512,
+		Tiles:  nil,
+		Width:  64,
+		Height: 64,
 	}
 
 	alpha := 2.0
@@ -39,26 +39,31 @@ func main() {
 			val = (val + 1) / 2
 
 			if j == 10 {
-				l.Tiles = append(l.Tiles, gogue.Tile{
+				l.Tiles = append(l.Tiles, &gogue.Tile{
 					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 					Color:      rl.Gray,
 					IsPassable: false,
+					Kind:       gogue.TileKind(gogue.WALL),
 				})
 			} else if val > 0.4 {
-				l.Tiles = append(l.Tiles, gogue.Tile{
+				l.Tiles = append(l.Tiles, &gogue.Tile{
 					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 					Color:      rl.Green,
 					IsPassable: true,
+					Kind:       gogue.TileKind(gogue.GRASS),
 				})
 			} else {
-				l.Tiles = append(l.Tiles, gogue.Tile{
+				l.Tiles = append(l.Tiles, &gogue.Tile{
 					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
 					Color:      rl.Gray,
 					IsPassable: false,
+					Kind:       gogue.TileKind(gogue.WALL),
 				})
 			}
 		}
 	}
+
+	l.InsertRandomDungeonDoor()
 
 	// fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
 
@@ -77,6 +82,8 @@ func main() {
 		Offset: rl.Vector2{X: gogue.SCREEN_WIDTH / 2, Y: gogue.SCREEN_HEIGHT / 2},
 		Zoom:   1.0,
 	}
+
+	fmt.Printf("Tile (10,10).Position = %v\n", l.Tiles[l.Index(10, 10)].Position)
 
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
@@ -106,17 +113,17 @@ func main() {
 		rl.EndMode2D()
 		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 0, 0, 24, rl.DarkGray)
 
-		// DrawDebugText(player)
+		DrawDebugText(player)
 
 		rl.EndDrawing()
 	}
 }
 
 func DrawDebugText(p gogue.Player) {
-	rl.DrawText(fmt.Sprintf("PLAYER POS: %d, %d", p.Position.X, p.Position.Y), 5, 5, 16, rl.DarkGray)
-	rl.DrawText(fmt.Sprintf("PLAYER MOVE TARGET: %d, %d", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 5, 22, 16, rl.DarkGray)
-	rl.DrawText(fmt.Sprintf("AT MOVE TARGET: %t", p.IsAtMoveTarget()), 5, 40, 16, rl.DarkGray)
+	// rl.DrawText(fmt.Sprintf("PLAYER POS: %d, %d", p.Position.X, p.Position.Y), 5, 5, 16, rl.DarkGray)
+	// rl.DrawText(fmt.Sprintf("PLAYER MOVE TARGET: %d, %d", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 5, 22, 16, rl.DarkGray)
+	// rl.DrawText(fmt.Sprintf("AT MOVE TARGET: %t", p.IsAtMoveTarget()), 5, 40, 16, rl.DarkGray)
 
 	rl.DrawText(fmt.Sprintf("p.MapPosition: %d, %d", p.MapPosition.X, p.MapPosition.Y), 250, 10, 16, rl.Black)
-	rl.DrawText(fmt.Sprintf("p.MoveTarget.Position: %d, %d", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 250, 30, 16, rl.Black)
+	// rl.DrawText(fmt.Sprintf("p.MoveTarget.Position: %d, %d", p.MoveTarget.Position.X, p.MoveTarget.Position.Y), 250, 30, 16, rl.Black)
 }
