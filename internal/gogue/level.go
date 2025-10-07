@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 
+	"github.com/aquilax/go-perlin"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -84,6 +85,63 @@ func (l *Level) InsertRandomDungeonDoor() {
 	doorTile.Kind = TileKind(DOOR)
 	fmt.Printf("PLACED DOOR AT (%d, %d)\n", doorTile.Position.X, doorTile.Position.Y)
 
+}
+
+func GenerateLevel(w, h int) *Level {
+	l := Level{
+		Tiles:  nil,
+		Width:  w,
+		Height: h,
+	}
+
+	alpha := 2.0
+	beta := 2.0
+	n := int32(3)
+	seed := rand.Int64()
+
+	p := perlin.NewPerlin(alpha, beta, n, seed)
+
+	// scale := 0.1
+
+	for j := 0; j < l.Height; j++ {
+		for i := 0; i < l.Width; i++ {
+
+			// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
+			val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
+
+			val = (val + 1) / 2
+
+			if j == 10 {
+				l.Tiles = append(l.Tiles, &Tile{
+					// Position:   MapPosition{X: (i)*TILE_SIZE + TILE_SIZE/2, Y: (j)*16 + TILE_SIZE/2},
+					Position:   MapPosition{X: i, Y: j},
+					Color:      rl.Gray,
+					IsPassable: false,
+					Kind:       TileKind(WALL),
+				})
+			} else if val > 0.4 {
+				l.Tiles = append(l.Tiles, &Tile{
+					// Position:   MapPosition{X: (i)*TILE_SIZE + TILE_SIZE/2, Y: (j)*16 + TILE_SIZE/2},
+					Position:   MapPosition{X: i, Y: j},
+					Color:      rl.Green,
+					IsPassable: true,
+					Kind:       TileKind(GRASS),
+				})
+			} else {
+				l.Tiles = append(l.Tiles, &Tile{
+					// Position:   MapPosition{X: (i)*TILE_SIZE + TILE_SIZE/2, Y: (j)*16 + TILE_SIZE/2},
+					Position:   MapPosition{X: i, Y: j},
+					Color:      rl.Gray,
+					IsPassable: false,
+					Kind:       TileKind(WALL),
+				})
+			}
+		}
+	}
+
+	l.InsertRandomDungeonDoor()
+
+	return &l
 }
 
 func (l *Level) GetAllNeighbourTiles(t *Tile) []Tile {

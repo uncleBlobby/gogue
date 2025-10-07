@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 
-	"github.com/aquilax/go-perlin"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/uncleBlobby/gogue/internal/gogue"
 )
@@ -15,58 +13,60 @@ func main() {
 
 	rl.SetTargetFPS(60)
 
-	l := gogue.Level{
-		Tiles:  nil,
-		Width:  64,
-		Height: 64,
-	}
+	// l := gogue.Level{
+	// 	Tiles:  nil,
+	// 	Width:  64,
+	// 	Height: 64,
+	// }
 
-	alpha := 2.0
-	beta := 2.0
-	n := int32(3)
-	seed := rand.Int63()
+	// alpha := 2.0
+	// beta := 2.0
+	// n := int32(3)
+	// seed := rand.Int63()
 
-	p := perlin.NewPerlin(alpha, beta, n, seed)
+	// p := perlin.NewPerlin(alpha, beta, n, seed)
 
-	// scale := 0.1
+	// // scale := 0.1
 
-	for j := 0; j < l.Height; j++ {
-		for i := 0; i < l.Width; i++ {
+	// for j := 0; j < l.Height; j++ {
+	// 	for i := 0; i < l.Width; i++ {
 
-			// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
-			val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
+	// 		// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
+	// 		val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
 
-			val = (val + 1) / 2
+	// 		val = (val + 1) / 2
 
-			if j == 10 {
-				l.Tiles = append(l.Tiles, &gogue.Tile{
-					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-					Position:   gogue.MapPosition{X: i, Y: j},
-					Color:      rl.Gray,
-					IsPassable: false,
-					Kind:       gogue.TileKind(gogue.WALL),
-				})
-			} else if val > 0.4 {
-				l.Tiles = append(l.Tiles, &gogue.Tile{
-					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-					Position:   gogue.MapPosition{X: i, Y: j},
-					Color:      rl.Green,
-					IsPassable: true,
-					Kind:       gogue.TileKind(gogue.GRASS),
-				})
-			} else {
-				l.Tiles = append(l.Tiles, &gogue.Tile{
-					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-					Position:   gogue.MapPosition{X: i, Y: j},
-					Color:      rl.Gray,
-					IsPassable: false,
-					Kind:       gogue.TileKind(gogue.WALL),
-				})
-			}
-		}
-	}
+	// 		if j == 10 {
+	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
+	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+	// 				Position:   gogue.MapPosition{X: i, Y: j},
+	// 				Color:      rl.Gray,
+	// 				IsPassable: false,
+	// 				Kind:       gogue.TileKind(gogue.WALL),
+	// 			})
+	// 		} else if val > 0.4 {
+	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
+	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+	// 				Position:   gogue.MapPosition{X: i, Y: j},
+	// 				Color:      rl.Green,
+	// 				IsPassable: true,
+	// 				Kind:       gogue.TileKind(gogue.GRASS),
+	// 			})
+	// 		} else {
+	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
+	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+	// 				Position:   gogue.MapPosition{X: i, Y: j},
+	// 				Color:      rl.Gray,
+	// 				IsPassable: false,
+	// 				Kind:       gogue.TileKind(gogue.WALL),
+	// 			})
+	// 		}
+	// 	}
+	// }
 
-	l.InsertRandomDungeonDoor()
+	// l.InsertRandomDungeonDoor()
+
+	l := gogue.GenerateLevel(64, 64)
 
 	// fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
 
@@ -109,7 +109,7 @@ func main() {
 
 		l.Draw(mwp, camera)
 
-		player.Update(dt, l, mwp)
+		player.Update(dt, *l, mwp)
 
 		player.Draw()
 
