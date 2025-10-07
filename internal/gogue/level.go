@@ -1,6 +1,9 @@
 package gogue
 
 import (
+	"fmt"
+	"math/rand/v2"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -53,6 +56,8 @@ func (l *Level) IsWalkable(pos MapPosition) bool {
 
 func (l *Level) InsertRandomDungeonDoor() {
 
+	candidates := []*Tile{}
+
 	// find a random wall tile somewhere that was walls on 3 sides and grass on another
 
 	// for _, t := range l.Tiles {
@@ -63,10 +68,21 @@ func (l *Level) InsertRandomDungeonDoor() {
 		if CountWallTilesInSlice(nbs) == 3 {
 			//make door tile type
 			// fmt.Printf("SPAWNING DOOR TILE X:%d Y:%d\n", l.Tiles[i].Position.X, l.Tiles[i].Position.Y)
-			l.Tiles[i].Kind = TileKind(DOOR)
+			candidates = append(candidates, l.Tiles[i])
+			//l.Tiles[i].Kind = TileKind(DOOR)
 			//return
 		}
 	}
+
+	if len(candidates) == 0 {
+		fmt.Println("NO VALID DOORS FOUND")
+		return
+	}
+
+	idx := rand.IntN(len(candidates))
+	doorTile := candidates[idx]
+	doorTile.Kind = TileKind(DOOR)
+	fmt.Printf("PLACED DOOR AT (%d, %d)\n", doorTile.Position.X, doorTile.Position.Y)
 
 }
 
@@ -93,8 +109,8 @@ func (l *Level) GetAllNeighbourTiles(t *Tile) []Tile {
 	neighbs := make([]Tile, 0, len(directions))
 
 	for _, d := range directions {
-		nX := (t.Position.X / TILE_SIZE) + d.X
-		nY := (t.Position.Y / TILE_SIZE) + d.Y
+		nX := t.Position.X + d.X
+		nY := t.Position.Y + d.Y
 		n := l.Get(nX, nY)
 
 		if n != nil {

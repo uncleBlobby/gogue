@@ -40,21 +40,24 @@ func main() {
 
 			if j == 10 {
 				l.Tiles = append(l.Tiles, &gogue.Tile{
-					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					Position:   gogue.MapPosition{X: i, Y: j},
 					Color:      rl.Gray,
 					IsPassable: false,
 					Kind:       gogue.TileKind(gogue.WALL),
 				})
 			} else if val > 0.4 {
 				l.Tiles = append(l.Tiles, &gogue.Tile{
-					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					Position:   gogue.MapPosition{X: i, Y: j},
 					Color:      rl.Green,
 					IsPassable: true,
 					Kind:       gogue.TileKind(gogue.GRASS),
 				})
 			} else {
 				l.Tiles = append(l.Tiles, &gogue.Tile{
-					Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
+					Position:   gogue.MapPosition{X: i, Y: j},
 					Color:      rl.Gray,
 					IsPassable: false,
 					Kind:       gogue.TileKind(gogue.WALL),

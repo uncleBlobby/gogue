@@ -1,6 +1,8 @@
 package gogue
 
 import (
+	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -50,8 +52,8 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 	if rl.IsMouseButtonReleased(rl.MouseButtonLeft) {
 		for _, t := range l.Tiles {
 			if rl.CheckCollisionPointRec(mwp, rl.Rectangle{
-				X:      float32(t.Position.X),
-				Y:      float32(t.Position.Y),
+				X:      float32(t.Position.X * TILE_SIZE),
+				Y:      float32(t.Position.Y * TILE_SIZE),
 				Width:  TILE_SIZE,
 				Height: TILE_SIZE,
 			}) {
@@ -71,7 +73,7 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			return
 		}
 
-		//fmt.Println(p.CurrentPath)
+		// fmt.Println(p.CurrentPath)
 		if p.CurrentPath != nil && p.PathIndex < len(p.CurrentPath) {
 
 			rl.DrawCircleV(p.Position, 4, rl.Red)
@@ -130,9 +132,9 @@ func (p *Player) Draw() {
 
 func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPosition {
 
-	end = MapPosition{end.X / 16, end.Y / 16}
+	//end = MapPosition{end.X, end.Y}
 
-	// fmt.Println("Start: ", start, "End: ", end)
+	fmt.Println("Start: ", start, "End: ", end)
 
 	var directions = []MapPosition{
 		{0, 1}, // down

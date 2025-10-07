@@ -20,7 +20,7 @@ func heuristic(a, b MapPosition) float64 {
 
 func AStar(level Level, start, goal MapPosition) []MapPosition {
 
-	goal = MapPosition{goal.X / 16, goal.Y / 16}
+	goal = MapPosition{goal.X, goal.Y}
 
 	fmt.Println("Start:", start, "Walkable?", level.IsWalkable(start))
 	fmt.Println("Goal:", goal, "Walkable?", level.IsWalkable(goal))
