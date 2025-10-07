@@ -8,10 +8,18 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type LevelKind int
+
+const (
+	OVERWORLD LevelKind = iota
+	CAVE
+)
+
 type Level struct {
 	Tiles  []*Tile
 	Width  int
 	Height int
+	Kind   LevelKind
 }
 
 func (l *Level) Draw(mwp rl.Vector2, camera rl.Camera2D) {
@@ -56,8 +64,13 @@ func (l *Level) InsertRandomDungeonDoor() {
 
 	for i := 0; i < len(l.Tiles); i++ {
 		nbs := l.GetAllNeighbourTiles(l.Tiles[i])
-		if CountWallTilesInSlice(nbs) == 3 {
-			candidates = append(candidates, l.Tiles[i])
+		if CountWallTilesInSlice(nbs, l.Kind) == 3 {
+			if l.Kind == LevelKind(OVERWORLD) {
+				candidates = append(candidates, l.Tiles[i])
+			}
+			if l.Kind == LevelKind(CAVE) && len(nbs) == 4 {
+				candidates = append(candidates, l.Tiles[i])
+			}
 		}
 	}
 
@@ -70,6 +83,7 @@ func (l *Level) InsertRandomDungeonDoor() {
 	doorTile := candidates[idx]
 	doorTile.Kind = TileKind(DOOR)
 	doorTile.IsPassable = true
+	fmt.Printf("INSERTED DOOR: %d, %d", doorTile.Position.X, doorTile.Position.Y)
 }
 
 func GenerateCave(w, h int) *Level {
@@ -77,6 +91,7 @@ func GenerateCave(w, h int) *Level {
 		Tiles:  nil,
 		Width:  w,
 		Height: h,
+		Kind:   LevelKind(CAVE),
 	}
 
 	alpha := 2.0
@@ -134,6 +149,7 @@ func GenerateLevel(w, h int) *Level {
 		Tiles:  nil,
 		Width:  w,
 		Height: h,
+		Kind:   LevelKind(OVERWORLD),
 	}
 
 	alpha := 2.0
@@ -225,11 +241,17 @@ func (l *Level) GetAllNeighbourTiles(t *Tile) []Tile {
 	return neighbs
 }
 
-func CountWallTilesInSlice(s []Tile) int {
+func CountWallTilesInSlice(s []Tile, lk LevelKind) int {
 	var count = 0
 	for _, t := range s {
 		// fmt.Println(t.Kind)
-		if t.Kind == TileKind(WALL) {
+
+		if lk == LevelKind(OVERWORLD) && t.Kind == TileKind(WALL) {
+			count += 1
+			// fmt.Printf("WALL NBS: %d\n", count)
+		}
+
+		if lk == LevelKind(CAVE) && t.Kind == TileKind(CAVE_WALL) {
 			count += 1
 			// fmt.Printf("WALL NBS: %d\n", count)
 		}
