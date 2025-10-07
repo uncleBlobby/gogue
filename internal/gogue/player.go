@@ -34,12 +34,35 @@ func GetMapPositionFromVec(v rl.Vector2) MapPosition {
 	}
 }
 
+func InitializePlayer(l *Level) Player {
+	return Player{
+		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
+		Position:    MapPosition{X: l.Width / 2, Y: l.Height / 2}.ToVec2(),
+		MapPosition: MapPosition{X: l.Width / 2, Y: l.Height / 2},
+		Speed:       100,
+		MoveTarget: Tile{
+			Position: MapPosition{X: l.Width / 2, Y: l.Height / 2},
+		},
+	}
+}
+
 func (p *Player) IsAtMoveTarget() bool {
 	if int(p.Position.X) != p.MoveTarget.Position.X || int(p.Position.Y) != p.MoveTarget.Position.Y {
 		return false
 	}
 
 	return true
+}
+
+func (p *Player) EnteredDoor(l *Level) bool {
+	currentTile := l.Get(p.MapPosition.X, p.MapPosition.Y)
+
+	if currentTile.Kind == TileKind(DOOR) {
+		fmt.Println("PLAYER HAS ENTERED DOOR")
+		return true
+	}
+
+	return false
 }
 
 func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
@@ -123,6 +146,10 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 		}
 
 	}
+
+	// if p.EnteredDoor(&l) {
+	// 	fmt.Println("REGENERATE LEVEL")
+	// }
 }
 
 func (p *Player) Draw() {

@@ -83,6 +83,7 @@ func (l *Level) InsertRandomDungeonDoor() {
 	idx := rand.IntN(len(candidates))
 	doorTile := candidates[idx]
 	doorTile.Kind = TileKind(DOOR)
+	doorTile.IsPassable = true
 	fmt.Printf("PLACED DOOR AT (%d, %d)\n", doorTile.Position.X, doorTile.Position.Y)
 
 }

@@ -70,15 +70,7 @@ func main() {
 
 	// fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
 
-	player := gogue.Player{
-		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
-		Position:    gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2}.ToVec2(),
-		MapPosition: gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2},
-		Speed:       100,
-		MoveTarget: gogue.Tile{
-			Position: gogue.MapPosition{X: l.Width / 2, Y: l.Height / 2},
-		},
-	}
+	player := gogue.InitializePlayer(l)
 
 	camera := rl.Camera2D{
 		Target: player.Position,
@@ -110,6 +102,10 @@ func main() {
 		l.Draw(mwp, camera)
 
 		player.Update(dt, *l, mwp)
+
+		if player.EnteredDoor(l) {
+			l = gogue.GenerateLevel(64, 64)
+		}
 
 		player.Draw()
 
