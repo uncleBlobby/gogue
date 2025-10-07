@@ -14,11 +14,12 @@ func main() {
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(60)
+	//rl.SetConfigFlags(rl.FlagVsyncHint)
 
 	l := gogue.Level{
 		Tiles:  []gogue.Tile{},
-		Width:  512,
-		Height: 512,
+		Width:  256,
+		Height: 256,
 	}
 
 	alpha := 2.0
@@ -28,13 +29,13 @@ func main() {
 
 	p := perlin.NewPerlin(alpha, beta, n, seed)
 
-	// scale := 0.1
+	scale := 0.1
 
 	for j := 0; j < l.Height; j++ {
 		for i := 0; i < l.Width; i++ {
 
-			// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
-			val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
+			val := p.Noise2D(float64(i)*scale, float64(j)*scale)
+			// val := 0.6*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
 
 			val = (val + 1) / 2
 
@@ -78,6 +79,8 @@ func main() {
 		Zoom:   1.0,
 	}
 
+	l.InitRenderTexture()
+
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
 
@@ -86,6 +89,8 @@ func main() {
 		mousePos := rl.GetMousePosition()
 
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
+
+		l.RedrawStaticLayer(mwp)
 
 		// mouseTilePosition := gogue.GetMapPositionFromVec(mwp)
 
@@ -97,7 +102,8 @@ func main() {
 
 		rl.ClearBackground(rl.RayWhite)
 
-		l.Draw(mwp, camera)
+		//l.Draw(mwp, camera)
+		l.DrawRenderTexture(mwp, camera)
 
 		player.Update(dt, l, mwp)
 
