@@ -23,6 +23,8 @@ func main() {
 		Zoom:   1.0,
 	}
 
+	fogTexture := rl.LoadRenderTexture(gogue.SCREEN_WIDTH, gogue.SCREEN_HEIGHT)
+
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
 
@@ -47,6 +49,32 @@ func main() {
 		player.Draw()
 
 		rl.EndMode2D()
+
+		if l.Kind == gogue.LevelKind(gogue.CAVE) {
+			rl.BeginTextureMode(fogTexture)
+			rl.DrawRectangle(0, 0, gogue.SCREEN_WIDTH, gogue.SCREEN_HEIGHT, rl.Black)
+			//playerScreenPos := rl.GetWorldToScreen2D(player.MapPosition.ToVec2(), camera)
+			rl.DrawCircleGradient(
+				gogue.SCREEN_WIDTH/2,
+				gogue.SCREEN_HEIGHT/2,
+				500,
+				rl.Fade(rl.Blank, 0.5),
+				rl.Fade(rl.Black, 1.0),
+			)
+
+			rl.EndTextureMode()
+
+			rl.BeginBlendMode(rl.BlendAlpha)
+			rl.DrawTextureRec(
+				fogTexture.Texture,
+				rl.NewRectangle(0, 0, float32(gogue.SCREEN_WIDTH), float32(-gogue.SCREEN_HEIGHT)),
+				rl.NewVector2(0, 0),
+				rl.White,
+			)
+
+			rl.EndBlendMode()
+		}
+
 		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 0, 0, 24, rl.DarkGray)
 
 		//		DrawDebugText(player)
