@@ -13,62 +13,7 @@ func main() {
 
 	rl.SetTargetFPS(60)
 
-	// l := gogue.Level{
-	// 	Tiles:  nil,
-	// 	Width:  64,
-	// 	Height: 64,
-	// }
-
-	// alpha := 2.0
-	// beta := 2.0
-	// n := int32(3)
-	// seed := rand.Int63()
-
-	// p := perlin.NewPerlin(alpha, beta, n, seed)
-
-	// // scale := 0.1
-
-	// for j := 0; j < l.Height; j++ {
-	// 	for i := 0; i < l.Width; i++ {
-
-	// 		// val := p.Noise2D(float64(i)*scale, float64(j)*scale)
-	// 		val := 0.25*p.Noise2D(float64(i)*0.05, float64(j)*0.05) + 0.75*p.Noise2D(float64(i)*0.15, float64(j)*0.15)
-
-	// 		val = (val + 1) / 2
-
-	// 		if j == 10 {
-	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
-	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-	// 				Position:   gogue.MapPosition{X: i, Y: j},
-	// 				Color:      rl.Gray,
-	// 				IsPassable: false,
-	// 				Kind:       gogue.TileKind(gogue.WALL),
-	// 			})
-	// 		} else if val > 0.4 {
-	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
-	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-	// 				Position:   gogue.MapPosition{X: i, Y: j},
-	// 				Color:      rl.Green,
-	// 				IsPassable: true,
-	// 				Kind:       gogue.TileKind(gogue.GRASS),
-	// 			})
-	// 		} else {
-	// 			l.Tiles = append(l.Tiles, &gogue.Tile{
-	// 				// Position:   gogue.MapPosition{X: (i)*gogue.TILE_SIZE + gogue.TILE_SIZE/2, Y: (j)*16 + gogue.TILE_SIZE/2},
-	// 				Position:   gogue.MapPosition{X: i, Y: j},
-	// 				Color:      rl.Gray,
-	// 				IsPassable: false,
-	// 				Kind:       gogue.TileKind(gogue.WALL),
-	// 			})
-	// 		}
-	// 	}
-	// }
-
-	// l.InsertRandomDungeonDoor()
-
-	l := gogue.GenerateLevel(64, 64)
-
-	// fmt.Println("TILE 10, 10 isPassable: ", l.IsWalkable(gogue.MapPosition{10, 10}))
+	l := gogue.GenerateLevel(128, 128)
 
 	player := gogue.InitializePlayer(l)
 
@@ -77,8 +22,6 @@ func main() {
 		Offset: rl.Vector2{X: gogue.SCREEN_WIDTH / 2, Y: gogue.SCREEN_HEIGHT / 2},
 		Zoom:   1.0,
 	}
-
-	fmt.Printf("Tile (10,10).Position = %v\n", l.Tiles[l.Index(10, 10)].Position)
 
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
@@ -89,14 +32,8 @@ func main() {
 
 		mwp := rl.GetScreenToWorld2D(mousePos, camera)
 
-		// mouseTilePosition := gogue.GetMapPositionFromVec(mwp)
-
-		// player.Update(dt, l, mwp)
-
 		rl.BeginDrawing()
-
 		rl.BeginMode2D(camera)
-
 		rl.ClearBackground(rl.RayWhite)
 
 		l.Draw(mwp, camera)
@@ -104,7 +41,7 @@ func main() {
 		player.Update(dt, *l, mwp)
 
 		if player.EnteredDoor(l) {
-			l = gogue.GenerateLevel(64, 64)
+			l = gogue.GenerateCave(128, 128)
 		}
 
 		player.Draw()
@@ -112,7 +49,7 @@ func main() {
 		rl.EndMode2D()
 		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 0, 0, 24, rl.DarkGray)
 
-		DrawDebugText(player)
+		//		DrawDebugText(player)
 
 		rl.EndDrawing()
 	}

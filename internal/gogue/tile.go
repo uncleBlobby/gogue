@@ -10,7 +10,9 @@ type TileKind int
 
 const (
 	GRASS TileKind = iota
+	STONE_FLOOR
 	WALL
+	CAVE_WALL
 	DOOR
 )
 
@@ -24,12 +26,12 @@ type Tile struct {
 func (t *Tile) Draw(mwp rl.Vector2) {
 
 	if t.Kind == TileKind(DOOR) {
-		//fmt.Println("DRAWING DOOR")
-		// rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE*4, TILE_SIZE*4, rl.Red)
 		rl.DrawRectangle(int32(t.Position.X*TILE_SIZE), int32(t.Position.Y*TILE_SIZE), TILE_SIZE, TILE_SIZE, rl.Red)
+	} else if t.Kind == TileKind(STONE_FLOOR) {
+		rl.DrawRectangle(int32(t.Position.X*TILE_SIZE), int32(t.Position.Y*TILE_SIZE), TILE_SIZE, TILE_SIZE, rl.Gray)
+	} else if t.Kind == TileKind(CAVE_WALL) {
+		rl.DrawRectangle(int32(t.Position.X*TILE_SIZE), int32(t.Position.Y*TILE_SIZE), TILE_SIZE, TILE_SIZE, rl.DarkGray)
 	} else {
-		// fmt.Println("DRAWING NON-DOOR")
-		// rl.DrawRectangle(int32(t.Position.X-TILE_SIZE/2), int32(t.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, t.Color)
 		rl.DrawRectangle(int32(t.Position.X*TILE_SIZE), int32(t.Position.Y*TILE_SIZE), TILE_SIZE, TILE_SIZE, t.Color)
 	}
 

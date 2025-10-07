@@ -107,26 +107,13 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 			}
 
 			tileTarget := p.CurrentPath[p.PathIndex]
-
 			worldTarget := tileTarget.ToVec2()
 
-			//target := p.CurrentPath[p.PathIndex].ToVec2()
-
-			//target = rl.Vector2{target.X * TILE_SIZE, target.Y * TILE_SIZE}
-			// rl.DrawText(fmt.Sprintf("TARGET: %v", target), 50, 200, 16, rl.DarkGray)
 			toTarget := rl.Vector2Subtract(worldTarget, p.Position)
-			// rl.DrawText(fmt.Sprintf("P POSITION: %v", target), 50, 225, 16, rl.DarkGray)
 			dist := rl.Vector2Length(toTarget)
-			// fmt.Println("DISTANCE: ", dist)
-
-			// epsilon := 4.0
-
-			// snapX := math.Abs(float64(toTarget.X)) < epsilon
-			// snapY := math.Abs(float64(toTarget.Y)) < epsilon
 
 			step := p.Speed * dt
 
-			// if dist < float32(epsilon) || dist < p.Speed*dt {
 			if dist <= step {
 				p.Position = worldTarget
 				p.MapPosition = p.CurrentPath[p.PathIndex]
@@ -136,20 +123,11 @@ func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 				}
 			} else {
 				dir := rl.Vector2Normalize(toTarget)
-				// fmt.Println("DIR: ", dir)
-				// p.Position.X = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).X)
-				// p.Position.Y = int(rl.Vector2Add(p.Position.ToVec2(), rl.Vector2Scale(dir, p.Speed*dt)).Y)
 				p.Position = rl.Vector2Add(p.Position, rl.Vector2Scale(dir, p.Speed*dt))
-				// p.Position.X += dir.X * p.Speed * dt
-				// p.Position.Y += dir.Y * p.Speed * dt
 			}
 		}
 
 	}
-
-	// if p.EnteredDoor(&l) {
-	// 	fmt.Println("REGENERATE LEVEL")
-	// }
 }
 
 func (p *Player) Draw() {
@@ -159,9 +137,7 @@ func (p *Player) Draw() {
 
 func BreadthFirstSearch(l Level, start MapPosition, end MapPosition) []MapPosition {
 
-	//end = MapPosition{end.X, end.Y}
-
-	fmt.Println("Start: ", start, "End: ", end)
+	// fmt.Println("Start: ", start, "End: ", end)
 
 	var directions = []MapPosition{
 		{0, 1}, // down

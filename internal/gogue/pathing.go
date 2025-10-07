@@ -1,7 +1,6 @@
 package gogue
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -21,9 +20,6 @@ func heuristic(a, b MapPosition) float64 {
 func AStar(level Level, start, goal MapPosition) []MapPosition {
 
 	goal = MapPosition{goal.X, goal.Y}
-
-	fmt.Println("Start:", start, "Walkable?", level.IsWalkable(start))
-	fmt.Println("Goal:", goal, "Walkable?", level.IsWalkable(goal))
 
 	var directions = []MapPosition{
 		{0, 1}, // down
@@ -65,7 +61,6 @@ func AStar(level Level, start, goal MapPosition) []MapPosition {
 			for n := current; n != nil; n = n.Parent {
 				path = append([]MapPosition{n.Pos}, path...)
 			}
-			// fmt.Println("RETURNING PATH")
 			return path
 		}
 
@@ -82,18 +77,14 @@ func AStar(level Level, start, goal MapPosition) []MapPosition {
 			}
 
 			if !neighbourPos.IsInBounds(level.Width, level.Height) {
-				//fmt.Println("TILE IS OUT OF BOUNDS")
 				continue
 			}
 
 			if !level.IsWalkable(neighbourPos) {
-				//rl.DrawRectangle(int32(neighbourPos.X)*16, int32(neighbourPos.X)*16, 16, 16, rl.Red)
-				//fmt.Println("TILE IS NOT PASSABLE")
 				continue
 			}
 
 			if closed[neighbourPos] {
-				//fmt.Println("closed[neighbourPos]")
 				continue
 			}
 
@@ -116,6 +107,5 @@ func AStar(level Level, start, goal MapPosition) []MapPosition {
 		}
 	}
 
-	// fmt.Println("NO PATH FOUND")
 	return nil
 }
