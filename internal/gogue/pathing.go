@@ -4,6 +4,12 @@ import (
 	"math"
 )
 
+type Pathfinder struct {
+	MoveTarget Tile
+	CurrenPath []MapPosition
+	PathIndex  int
+}
+
 type Node struct {
 	Pos    MapPosition
 	G, H   float64

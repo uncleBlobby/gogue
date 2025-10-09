@@ -7,6 +7,7 @@ import (
 )
 
 type Player struct {
+	Actor       Actor
 	MapPosition MapPosition
 	Position    rl.Vector2
 	Speed       float32
@@ -37,6 +38,9 @@ func GetMapPositionFromVec(v rl.Vector2) MapPosition {
 func InitializePlayer(l *Level) Player {
 	return Player{
 		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
+		Actor: Actor{
+			Stats: InitBaseStats(10, 5, 5, 5, 5),
+		},
 		Position:    MapPosition{X: l.Width / 2, Y: l.Height / 2}.ToVec2(),
 		MapPosition: MapPosition{X: l.Width / 2, Y: l.Height / 2},
 		Speed:       100,
