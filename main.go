@@ -25,6 +25,8 @@ func main() {
 
 	fogTexture := rl.LoadRenderTexture(gogue.SCREEN_WIDTH, gogue.SCREEN_HEIGHT)
 
+	enemy := gogue.InitializeEnemy(l)
+
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
 
@@ -39,8 +41,14 @@ func main() {
 		rl.ClearBackground(rl.RayWhite)
 
 		l.Draw(mwp, camera)
+		enemy.Draw()
 
 		player.Update(dt, *l, mwp)
+		enemy.Update(dt, *l, &player)
+
+		if enemy.LockedOntoPlayer(l, &player) {
+			enemy.SetupPathfindingTarget(l, &player)
+		}
 
 		if player.EnteredDoor(l) {
 			l = gogue.GenerateCave(128, 128)

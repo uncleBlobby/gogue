@@ -1,6 +1,7 @@
 package gogue
 
 import (
+	"fmt"
 	"math/rand/v2"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -51,10 +52,39 @@ func (e *Enemy) Draw() {
 	rl.DrawRectangle(int32(e.Position.X-TILE_SIZE/2), int32(e.Position.Y-TILE_SIZE/2), TILE_SIZE, TILE_SIZE, rl.Red)
 }
 
-func (e *Enemy) Update(dt float32, l Level) {
+func (e *Enemy) LockedOntoPlayer(l *Level, p *Player) bool {
+	dToP := rl.Vector2Distance(e.Position, p.Position)
+
+	if dToP < 100 {
+		fmt.Println("PLAYER IS IN RANGE")
+		e.Player = p
+		return true
+	}
+
+	return false
+}
+
+func (e *Enemy) SetupPathfindingTarget(l *Level, p *Player) {
+	e.MoveTarget = *l.Get(p.MapPosition.X, p.MapPosition.Y)
+	pathToTarget := AStar(*l, e.MapPosition, e.MoveTarget.Position)
+	e.CurrentPath = pathToTarget
+	e.PathIndex = 1
+}
+
+func (e *Enemy) Update(dt float32, l Level, p *Player) {
 	e.MapPosition = GetMapPositionFromVec(e.Position)
 
 	// pMapPosWorld := e.MapPosition.ToVec2()
+
+	// check distance to player
+
+	dToP := rl.Vector2Distance(e.Position, p.Position)
+
+	if dToP < 100 {
+		fmt.Println("PLAYER IS IN RANGE")
+		e.Player = p
+		e.MoveTarget = *l.Get(p.MapPosition.X, p.MapPosition.Y)
+	}
 
 	if !e.IsAtMoveTarget() {
 
