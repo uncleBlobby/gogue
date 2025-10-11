@@ -1,9 +1,14 @@
 package gogue
 
-import "math/rand/v2"
+import (
+	"math/rand/v2"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
 
 type Actor struct {
-	Stats Stats
+	Stats    Stats
+	Collider rl.Rectangle
 }
 
 type AttackResult int
@@ -80,6 +85,10 @@ type Stats struct {
 	Dodge     Stat
 }
 
+func InitBaseCollider(xPos, yPos, width, height float32) rl.Rectangle {
+	return rl.Rectangle{X: xPos, Y: yPos, Width: width, Height: height}
+}
+
 func InitBaseStats(
 	hp int,
 	atk int,
@@ -154,3 +163,12 @@ func (a *Attack) Attack(target *Stats) AttackResult {
 
 	return AttackResult(MISS)
 }
+
+func (a *Actor) CollidingOtherActor(targ *Actor) bool {
+
+	return rl.CheckCollisionRecs(a.Collider, targ.Collider)
+}
+
+// func (a *Actor) UpdateCollider(dt float32) {
+// 	a.Collider.X =
+// }

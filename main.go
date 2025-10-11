@@ -84,6 +84,7 @@ func main() {
 		}
 
 		rl.DrawText(fmt.Sprintf("FPS: %d", rl.GetFPS()), 0, 0, 24, rl.DarkGray)
+		rl.DrawText(fmt.Sprintf("HP: %d/%d", player.Actor.Stats.Hitpoints.Current, player.Actor.Stats.Hitpoints.Max), 0, 28, 24, rl.DarkGray)
 
 		//		DrawDebugText(player)
 

@@ -27,7 +27,7 @@ func InitializeEnemy(l *Level) Enemy {
 	xRand := rand.IntN(l.Width)
 	yRand := rand.IntN(l.Height)
 
-	return Enemy{
+	e := Enemy{
 		Actor: Actor{
 			Stats: InitBaseStats(10, 5, 5, 5, 5),
 		},
@@ -38,6 +38,15 @@ func InitializeEnemy(l *Level) Enemy {
 			Position: MapPosition{X: xRand, Y: yRand},
 		},
 	}
+
+	e.Actor.Collider = InitBaseCollider(e.Position.X, e.Position.Y, 16, 16)
+
+	return e
+}
+
+func (e *Enemy) Updatecollider(dt float32) {
+	e.Actor.Collider.X = e.Position.X
+	e.Actor.Collider.Y = e.Position.Y
 }
 
 func (p *Enemy) IsAtMoveTarget() bool {
@@ -72,6 +81,7 @@ func (e *Enemy) SetupPathfindingTarget(l *Level, p *Player) {
 }
 
 func (e *Enemy) Update(dt float32, l Level, p *Player) {
+	e.Updatecollider(dt)
 	e.MapPosition = GetMapPositionFromVec(e.Position)
 
 	// pMapPosWorld := e.MapPosition.ToVec2()
@@ -109,6 +119,13 @@ func (e *Enemy) Update(dt float32, l Level, p *Player) {
 			dist := rl.Vector2Length(toTarget)
 
 			step := e.Speed * dt
+
+			// check if we're colliding against the player
+
+			if e.Actor.CollidingOtherActor(&p.Actor) {
+				e.Actor.Attack(&p.Actor)
+				return
+			}
 
 			if dist <= step {
 				e.Position = worldTarget

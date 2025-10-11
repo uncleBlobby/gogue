@@ -36,7 +36,7 @@ func GetMapPositionFromVec(v rl.Vector2) MapPosition {
 }
 
 func InitializePlayer(l *Level) Player {
-	return Player{
+	p := Player{
 		// Position:    rl.Vector2{X: 0 + gogue.TILE_SIZE/2, Y: 0 + gogue.TILE_SIZE/2},
 		Actor: Actor{
 			Stats: InitBaseStats(10, 5, 5, 5, 5),
@@ -48,6 +48,10 @@ func InitializePlayer(l *Level) Player {
 			Position: MapPosition{X: l.Width / 2, Y: l.Height / 2},
 		},
 	}
+
+	p.Actor.Collider = InitBaseCollider(p.Position.X, p.Position.Y, 16, 16)
+
+	return p
 }
 
 func (p *Player) IsAtMoveTarget() bool {
@@ -69,9 +73,15 @@ func (p *Player) EnteredDoor(l *Level) bool {
 	return false
 }
 
+func (p *Player) UpdateCollider(dt float32) {
+	p.Actor.Collider.X = p.Position.X
+	p.Actor.Collider.Y = p.Position.Y
+}
+
 func (p *Player) Update(dt float32, l Level, mwp rl.Vector2) {
 
 	p.MapPosition = GetMapPositionFromVec(p.Position)
+	p.UpdateCollider(dt)
 
 	pMapPosWorld := p.MapPosition.ToVec2()
 	rl.DrawRectangle(int32(pMapPosWorld.X)-TILE_SIZE/2, int32(pMapPosWorld.Y)-TILE_SIZE/2, 16, 16, rl.Orange)
